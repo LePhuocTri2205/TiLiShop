@@ -1,0 +1,248 @@
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  Button,
+  Space,
+  Popconfirm,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Spin,
+  Breadcrumb,
+  Card,
+} from "antd";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
+import { toast } from "react-toastify";
+import axios from "axios";
+
+const API_URL = "https://6964b3a2e8ce952ce1f29a17.mockapi.io/BanhTrang";
+
+const BanhTrangPage = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const [form] = Form.useForm();
+
+  // Fetch data từ API
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(API_URL);
+      setData(response.data);
+    } catch (error) {
+      toast.error("❌ Fetch data failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Thêm mới record
+  const handleAddNew = () => {
+    setSelectedRecord(null);
+    form.resetFields();
+    setModalVisible(true);
+  };
+
+  // Chỉnh sửa record
+  const handleEdit = (record) => {
+    setSelectedRecord(record);
+    form.setFieldsValue(record);
+    setModalVisible(true);
+  };
+
+  // Submit form (Create/Update)
+  const handleSubmitForm = async (values) => {
+    try {
+      if (selectedRecord) {
+        await axios.put(`${API_URL}/${selectedRecord.id}`, values);
+        toast.success("✅ Update success!");
+      } else {
+        await axios.post(API_URL, values);
+        toast.success("✅ Create success!");
+      }
+      fetchData();
+      setModalVisible(false);
+      form.resetFields();
+      setSelectedRecord(null);
+    } catch (error) {
+      toast.error("❌ Submit failed!");
+    }
+  };
+
+  // Xóa record
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      toast.success("✅ Delete success!");
+      fetchData();
+    } catch (error) {
+      toast.error("❌ Delete failed!");
+    }
+  };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      width: "30%",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      width: "40%",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      width: "15%",
+      render: (price) => `${price?.toLocaleString() || 0} đ`,
+    },
+    {
+      title: "Action",
+      key: "action",
+      width: "15%",
+      render: (_, record) => (
+        <Space size="small">
+          <Button
+            type="primary"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          >
+            Edit
+          </Button>
+          <Popconfirm
+            title="Delete category"
+            description="Are you sure?"
+            okText="Delete"
+            cancelText="Cancel"
+            onConfirm={() => handleDelete(record.id)}
+          >
+            <Button
+              type="primary"
+              danger
+              size="small"
+              icon={<DeleteOutlined />}
+            >
+              Delete
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <Spin spinning={loading}>
+      <div className="p-6 bg-gray-50 min-h-screen">
+        {/* Breadcrumb */}
+        <div className="mb-6">
+          <Breadcrumb
+            items={[
+              {
+                href: "#",
+                title: <HomeOutlined />,
+              },
+              {
+                title: "Dashboard",
+              },
+              {
+                title: "Bánh Tráng",
+              },
+            ]}
+          />
+        </div>
+
+        {/* Header với nút thêm */}
+        <div className="mb-6">
+          <Button
+            type="primary"
+            size="large"
+            icon={<PlusOutlined />}
+            onClick={handleAddNew}
+          >
+            Add category
+          </Button>
+        </div>
+
+        {/* Table Card */}
+        <Card className="rounded-lg shadow-sm">
+          <Table
+            columns={columns}
+            dataSource={data}
+            rowKey="id"
+            pagination={{ pageSize: 10, total: data.length }}
+            bordered={false}
+            size="middle"
+          />
+        </Card>
+      </div>
+
+      {/* Modal */}
+      <Modal
+        title={selectedRecord ? "✏️ Edit category" : "➕ Add category"}
+        open={modalVisible}
+        onOk={() => form.submit()}
+        onCancel={() => {
+          setModalVisible(false);
+          form.resetFields();
+          setSelectedRecord(null);
+        }}
+        okText={selectedRecord ? "Update" : "Add"}
+        cancelText="Cancel"
+        width={500}
+      >
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={handleSubmitForm}
+          className="mt-4"
+        >
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input name!" }]}
+          >
+            <Input placeholder="Enter name" />
+          </Form.Item>
+
+          <Form.Item
+            label="Description"
+            name="description"
+            rules={[{ required: true, message: "Please input description!" }]}
+          >
+            <Input.TextArea rows={3} placeholder="Enter description" />
+          </Form.Item>
+
+          <Form.Item
+            label="Price"
+            name="price"
+            rules={[{ required: true, message: "Please input price!" }]}
+          >
+            <InputNumber
+              min={0}
+              style={{ width: "100%" }}
+              placeholder="Enter price"
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Spin>
+  );
+};
+
+export default BanhTrangPage;

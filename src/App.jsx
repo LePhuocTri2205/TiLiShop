@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from "./components/dashboard";
-import ManageBanhTrang from "./pages/banhtrang";
-import ManageNuocMam from "./pages/nuocmam";
+import RicePaperManage from "./pages/ricePaper";
+import FishSauceManage from "./pages/fishSauce";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 
@@ -12,12 +12,12 @@ function App() {
       element: <Dashboard />,
       children: [
         {
-          path: "banhtrang",
-          element: <ManageBanhTrang />,
+          path: "ricePaper",
+          element: <RicePaperManage />,
         },
         {
-          path: "nuocmam",
-          element: <ManageNuocMam />,
+          path: "fishSauce",
+          element: <FishSauceManage />,
         },
       ],
     },

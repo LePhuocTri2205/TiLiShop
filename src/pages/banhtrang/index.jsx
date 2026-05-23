@@ -92,36 +92,60 @@ const ManageBanhTrang = () => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên sản phẩm",
       dataIndex: "name",
       key: "name",
+      render: (text) => (
+        <span style={{ color: '#5C2D1B', fontWeight: 600 }}>{text}</span>
+      ),
     },
     {
-      title: "Description",
+      title: "Mô tả",
       dataIndex: "description",
       key: "description",
+      render: (text) => (
+        <span style={{ color: '#7a5040' }}>{text}</span>
+      ),
     },
     {
-      title: "Price",
+      title: "Giá (VNĐ)",
       dataIndex: "price",
       key: "price",
+      render: (val) => (
+        <span style={{ color: '#8B2D1F', fontWeight: 700 }}>
+          {Number(val).toLocaleString('vi-VN')}đ
+        </span>
+      ),
     },
     {
-      title: "Actions",
+      title: "Thao tác",
       key: "actions",
       render: (_, record) => (
         <Space>
-          <Button type="link" onClick={() => openEditModal(record)}>
-            Sua
+          <Button
+            type="default"
+            onClick={() => openEditModal(record)}
+            style={{
+              borderColor: '#A63D2D',
+              color: '#A63D2D',
+              borderRadius: '8px',
+              fontWeight: 600,
+            }}
+          >
+            ✒ Sửa
           </Button>
           <Popconfirm
-            title="Xoa banh trang nay?"
-            okText="Xoa"
-            cancelText="Huy"
+            title="Xóa bánh tráng này?"
+            okText="Xóa"
+            cancelText="Hủy"
             onConfirm={() => handleDelete(record)}
           >
-            <Button type="link" danger>
-              Xoa
+            <Button
+              type="link"
+              danger
+              style={{ fontWeight: 600, padding: '0 8px' }}
+            >
+              🗑 Xóa
             </Button>
           </Popconfirm>
         </Space>
@@ -131,11 +155,54 @@ const ManageBanhTrang = () => {
 
   return (
     <div>
-      <Space style={{ marginBottom: 16 }}>
-        <Button type="primary" onClick={openAddModal}>
-          Them banh trang
+      {/* Page Header */}
+      <div
+        style={{
+          marginBottom: 24,
+          paddingBottom: 16,
+          borderBottom: '2px solid #E8D5B5',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: 12,
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 22,
+              fontFamily: 'serif',
+              fontWeight: 700,
+              color: '#8B2D1F',
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+            }}
+          >
+            🥟 Quản Lý Bánh Tráng
+          </h2>
+          <p style={{ margin: '4px 0 0', color: '#A68060', fontSize: 13 }}>
+            Danh sách các loại bánh tráng đầy đủ trong hệ thống
+          </p>
+        </div>
+        <Button
+          type="primary"
+          onClick={openAddModal}
+          style={{
+            background: 'linear-gradient(135deg, #A63D2D 0%, #8B2D1F 100%)',
+            border: 'none',
+            borderRadius: 10,
+            fontWeight: 700,
+            letterSpacing: '0.04em',
+            padding: '0 20px',
+            height: 40,
+            boxShadow: '0 4px 12px rgba(139,45,31,0.3)',
+          }}
+        >
+          + Thêm Bánh Tráng
         </Button>
-      </Space>
+      </div>
       <Table
         rowKey="id"
         dataSource={banhTrangData}

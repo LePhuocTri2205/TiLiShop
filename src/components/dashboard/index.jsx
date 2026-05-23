@@ -17,8 +17,8 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem('Quản lí bánh tráng', 'banhtrang', <PieChartOutlined />),
-  getItem('Quản lí nước mắm', 'nuocmam', <PieChartOutlined />),
+  getItem('Quản lí bánh tráng', 'ricePaper', <PieChartOutlined />),
+  getItem('Quản lí nước mắm', 'fishSauce', <PieChartOutlined />),
 ];
 
 const BRAND = '#8B2D1F';
@@ -32,7 +32,7 @@ const Dashboard = () => {
   const currentYear = new Date().getFullYear();
 
   // Xác định menu key từ pathname
-  const selectedKey = location.pathname.replace('/', '') || 'banhtrang';
+  const selectedKey = location.pathname.replace('/', '') || 'ricePaper';
 
   return (
     <ConfigProvider

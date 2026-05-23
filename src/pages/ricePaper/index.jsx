@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 
 const API_URL = "https://6964b3a2e8ce952ce1f29a17.mockapi.io/BanhTrang";
 
-const ManageBanhTrang = () => {
+const RicePaperManage = () => {
   const [banhTrangData, setBanhTrangData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -247,4 +247,4 @@ const ManageBanhTrang = () => {
   );
 };
 
-export default ManageBanhTrang;
+export default RicePaperManage;
